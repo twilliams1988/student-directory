@@ -23,10 +23,8 @@ end
 
 def print(students)
   students.each_with_index do |student, index|
-    if student[:name].chars.first == "M"
+    if student[:name].length < 12
       puts "#{index.to_i + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-    else
-      puts "No students begin with the letter 'M'"
     end
   end
 end
