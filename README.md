@@ -24,7 +24,8 @@ As Einstein once said:
 You can call our code `in line`.
 
 Or as its own
-```code block
+```
+code block
 on multiple
 lines
 ```
