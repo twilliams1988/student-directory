@@ -5,31 +5,39 @@ def input_students
   #Create empty array
   $students = []
   #Get the first names
-  name = gets.chomp
+  name = gets.chop
+  if name == ""
+    puts "You didn't enter a name, the program is quitting..."
+    5.downto(0) do |i|
+      puts "#{'%02d' % i}"
+      sleep 1
+    end
+  exit
+  end
   # While the array is not empty, repeat this code
   puts "Is #{name} spelt correctly? y/n"
-  spell = gets.chomp.downcase
+  spell = gets.chop.downcase
   until spell == "n" || spell == "y"
     puts "You didn't enter 'y' or 'n', please re-enter:"
-    spell = gets.chomp.downcase
+    spell = gets.chop.downcase
   end
   while spell == "n"
     puts "Please re-enter the name spelt correctly:"
-    name = gets.chomp
+    name = gets.chop
     puts "Is #{name} spelt correctly? y/n"
-    spell = gets.chomp.downcase
+    spell = gets.chop.downcase
     until spell == "n" || spell == "y"
       puts "You didn't enter 'y' or 'n', please re-enter:"
-      spell = gets.chomp.downcase
+      spell = gets.chop.downcase
     end
   end
   while !name.empty? do
     # Add the student hash to the array
     puts "Please enter #{name}'s cohort in the format 'monthYY'"
-    cohort = gets.chomp
+    cohort = gets.chop
     while cohort.empty? do
       puts "You must enter #{name}'s cohort"
-      cohort = gets.chomp
+      cohort = gets.chop
     end
     $cohort_months = [ "april15", "april16", "august14",
                       "december14", "february15", "february16",
@@ -39,21 +47,21 @@ def input_students
                       "may16"]
     until $cohort_months.include?(cohort)
       puts "You did not enter a valid cohort e.g. july16"
-      cohort = gets.chomp
+      cohort = gets.chop
     end
     cohort.to_sym
     hobbies = []
     puts "Please enter #{name}'s hobbies, one by one followed by return."
-    hobby_each = gets.chomp
+    hobby_each = gets.chop
     while !hobby_each.empty? do
       hobbies << hobby_each
-      hobby_each = gets.chomp
+      hobby_each = gets.chop
     end
     puts "Please enter #{name}'s country of birth"
-    country_birth = gets.chomp
+    country_birth = gets.chop
     while country_birth.empty? do
       puts "You must enter #{name}'s country of birth"
-      country_birth = gets.chomp
+      country_birth = gets.chop
     end
     $students << {name: name, cohort: cohort, hobbies: hobbies, country_birth: country_birth}
     if $students.count == 1
@@ -63,7 +71,7 @@ def input_students
     end
     # Get another name from the user
     puts "Please enter the name of the next student"
-    name = gets.chomp
+    name = gets.chop
   end
 end
 
@@ -94,8 +102,8 @@ def print_cohorts(students)
   cohort_sorted = students.group_by { |e| e[:cohort] }
   cohort_sorted.each do |k,v|
     puts "-" * 50
-    puts ""
     print "Cohort: #{k}\t"
+    puts ""
     v.each do |student|
       puts "\n\tName: #{student[:name]}\n\tBorn in: #{student[:country_birth]}\n\tHobbies: #{student[:hobbies].join(", ")}"
     end
