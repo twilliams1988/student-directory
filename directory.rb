@@ -56,7 +56,11 @@ def input_students
       country_birth = gets.chomp
     end
     $students << {name: name, cohort: cohort, hobbies: hobbies, country_birth: country_birth}
-    puts "Now we have #{$students.count} students"
+    if $students.count == 1
+      puts "Now we have 1 student"
+    else
+      puts "Now we have #{$students.count} students"
+    end
     # Get another name from the user
     puts "Please enter the name of the next student"
     name = gets.chomp
