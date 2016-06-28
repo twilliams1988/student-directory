@@ -1,3 +1,7 @@
+#Things I could add:
+#1: Blank input while loop checker for all the blank input checking.
+#2: Name input method
+
 @students = []
 def input_students
   puts "Please enter the names of the students"
@@ -7,12 +11,7 @@ def input_students
   #Get the first names
   name = STDIN.gets.chop
   if name == ""
-    puts "You didn't enter a name, the program is quitting..."
-    5.downto(0) do |i|
-      puts "#{i}"
-      sleep 1
-    end
-  exit
+    exit_countdown
   end
   # While the array is not empty, repeat this code
   puts "Is #{name} spelt correctly? y/n"
@@ -80,23 +79,6 @@ def print_header
   puts "The students of Villains Academy".center(50)
   puts "-"*50
 end
-=begin
-def print_name(students)
-  i = 0
-  while (i < students.length)
-      puts "#{i+1}.\tName: #{students[i][:name]}\n\tCohort: #{students[i][:cohort]}\n\tBorn in: #{students[i][:country_birth]}\n\tHobbies: #{students[i][:hobbies].join(", ")}"
-      i += 1
-  end
-end
-
-def print_cohorts(students)
-  i = 0
-  while (i < students.length)
-      puts "#{i+1}.\tName: #{students[i][:name]}\n\tCohort: #{students[i][:cohort]}\n\tBorn in: #{students[i][:country_birth]}\n\tHobbies: #{students[i][:hobbies].join(", ")}"
-      i += 1
-  end
-end
-=end
 
 def print_cohorts(students)
   cohort_sorted = students.group_by { |e| e[:cohort] }
@@ -109,16 +91,6 @@ def print_cohorts(students)
     end
   end
 end
-
-=begin
-def print(students)
-  students.each_with_index do |student, index|
-    if student[:name].length < 12
-      puts "#{index.to_i + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-    end
-  end
-end
-=end
 
 def print_footer(names)
   if @students.count == 1
@@ -146,18 +118,44 @@ end
 def process(selection)
   case selection
   when "1"
+    print "Taking you to the student input form"
+    dot_counter
     input_students
   when "2"
+    print "Printing the current list of students"
+    dot_counter
     show_students
   when "3"
+    print "Saving the students"
+    dot_counter
     save_students
   when "4"
+    print "Loading the students"
+    dot_counter
     load_students
   when "9"
-    exit
+    exit_countdown
   else
     puts "I don't know what you meant, try again"
   end
+end
+
+def exit_countdown
+  puts "The program is quitting..."
+  5.downto(0) do |i|
+    puts "#{i}"
+    sleep 1
+  end
+  exit
+end
+
+def dot_counter
+  print "."
+  3.downto(0) do |i|
+    print "."
+    sleep 1
+  end
+  puts "."
 end
 
 def save_students
@@ -174,8 +172,9 @@ end
 
 def try_load_students
   filename = ARGV.first
-  return if filename.nil?
-  if File.exists?(filename)
+  if filename.nil?
+    load_students("students.csv")
+  elsif File.exists?(filename)
     load_students(filename)
     puts "Loaded #{@students.count} from #{filename}"
   else
@@ -200,15 +199,43 @@ def interactive_menu
   end
 end
 
+try_load_students
+interactive_menu
+
+
 #students = input_students
 #print_header
 #print_name(@students)
 #print_cohorts(@students)
 #print_footer(@students)
 
-try_load_students
-interactive_menu
+=begin
+def print_name(students)
+  i = 0
+  while (i < students.length)
+      puts "#{i+1}.\tName: #{students[i][:name]}\n\tCohort: #{students[i][:cohort]}\n\tBorn in: #{students[i][:country_birth]}\n\tHobbies: #{students[i][:hobbies].join(", ")}"
+      i += 1
+  end
+end
 
+def print_cohorts(students)
+  i = 0
+  while (i < students.length)
+      puts "#{i+1}.\tName: #{students[i][:name]}\n\tCohort: #{students[i][:cohort]}\n\tBorn in: #{students[i][:country_birth]}\n\tHobbies: #{students[i][:hobbies].join(", ")}"
+      i += 1
+  end
+end
+=end
+
+=begin
+def print(students)
+  students.each_with_index do |student, index|
+    if student[:name].length < 12
+      puts "#{index.to_i + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    end
+  end
+end
+=end
 
 =begin
 print_header
