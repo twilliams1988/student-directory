@@ -1,9 +1,9 @@
-$students = []
+@students = []
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit retrun twice on name"
   #Create empty array
-  $students = []
+  @students = []
   #Get the first names
   name = gets.chop
   if name == ""
@@ -63,11 +63,11 @@ def input_students
       puts "You must enter #{name}'s country of birth"
       country_birth = gets.chop
     end
-    $students << {name: name, cohort: cohort, hobbies: hobbies, country_birth: country_birth}
-    if $students.count == 1
+    @students << {name: name, cohort: cohort, hobbies: hobbies, country_birth: country_birth}
+    if @students.count == 1
       puts "Now we have 1 student"
     else
-      puts "Now we have #{$students.count} students"
+      puts "Now we have #{@students.count} students"
     end
     # Get another name from the user
     puts "Please enter the name of the next student"
@@ -121,45 +121,53 @@ end
 =end
 
 def print_footer(names)
-  if $students.count == 1
+  if @students.count == 1
     puts "Overall, we have 1 great student"
   else
     puts "Overall, we have #{names.count} great students"
   end
 end
 
-def interactive_menu
-  students = []
-  loop do
+def print_menu
   # 1. print the menu and ask the user what to do
   puts "1. Input the students"
   puts "2. Show the students"
   puts "9. Exit"
-  # 2. read the input and save it into a variable
-  selection = gets.chomp
+end
+
+def show_students
+  print_header
+  print_cohorts(@students)
+  print_footer(@students)
+end
+
+def process(selection)
   case selection
   when "1"
     input_students
   when "2"
-    print_header
-    print_cohorts($students)
-    print_footer($students)
+    show_students
   when "9"
     exit
   else
     puts "I don't know what you meant, try again"
   end
+end
 
-  # 3. do what the user has asked
+
+def interactive_menu
+  @students = []
+  loop do
+    print_menu
+    process(gets.chomp)
   end
-  # 4. repeat from step 1
 end
 
 #students = input_students
 #print_header
-#print_name($students)
-#print_cohorts($students)
-#print_footer($students)
+#print_name(@students)
+#print_cohorts(@students)
+#print_footer(@students)
 
 interactive_menu
 
