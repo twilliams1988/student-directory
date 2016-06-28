@@ -9,7 +9,7 @@ def input_students
   if name == ""
     puts "You didn't enter a name, the program is quitting..."
     5.downto(0) do |i|
-      puts "#{'%02d' % i}"
+      puts "#{i}"
       sleep 1
     end
   exit
@@ -121,14 +121,47 @@ end
 =end
 
 def print_footer(names)
-  puts "Overall, we have #{names.count} great students"
+  if $students.count == 1
+    puts "Overall, we have 1 great student"
+  else
+    puts "Overall, we have #{names.count} great students"
+  end
 end
 
-students = input_students
-print_header
+def interactive_menu
+  students = []
+  loop do
+  # 1. print the menu and ask the user what to do
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit"
+  # 2. read the input and save it into a variable
+  selection = gets.chomp
+  case selection
+  when "1"
+    input_students
+  when "2"
+    print_header
+    print_cohorts($students)
+    print_footer($students)
+  when "9"
+    exit
+  else
+    puts "I don't know what you meant, try again"
+  end
+
+  # 3. do what the user has asked
+  end
+  # 4. repeat from step 1
+end
+
+#students = input_students
+#print_header
 #print_name($students)
-print_cohorts($students)
-print_footer($students)
+#print_cohorts($students)
+#print_footer($students)
+
+interactive_menu
 
 =begin
 print_header
