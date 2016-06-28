@@ -5,7 +5,7 @@ def input_students
   #Create empty array
   @students = []
   #Get the first names
-  name = gets.chop
+  name = STDIN.gets.chop
   if name == ""
     puts "You didn't enter a name, the program is quitting..."
     5.downto(0) do |i|
@@ -16,28 +16,28 @@ def input_students
   end
   # While the array is not empty, repeat this code
   puts "Is #{name} spelt correctly? y/n"
-  spell = gets.chop.downcase
+  spell = STDIN.gets.chop.downcase
   until spell == "n" || spell == "y"
     puts "You didn't enter 'y' or 'n', please re-enter:"
-    spell = gets.chop.downcase
+    spell = STDIN.gets.chop.downcase
   end
   while spell == "n"
     puts "Please re-enter the name spelt correctly:"
-    name = gets.chop
+    name = STDIN.gets.chop
     puts "Is #{name} spelt correctly? y/n"
-    spell = gets.chop.downcase
+    spell = STDIN.gets.chop.downcase
     until spell == "n" || spell == "y"
       puts "You didn't enter 'y' or 'n', please re-enter:"
-      spell = gets.chop.downcase
+      spell = STDIN.gets.chop.downcase
     end
   end
   while !name.empty? do
     # Add the student hash to the array
     puts "Please enter #{name}'s cohort in the format 'monthYY'"
-    cohort = gets.chop
+    cohort = STDIN.gets.chop
     while cohort.empty? do
       puts "You must enter #{name}'s cohort"
-      cohort = gets.chop
+      cohort = STDIN.gets.chop
     end
     $cohort_months = [ "april15", "april16", "august14",
                       "december14", "february15", "february16",
@@ -47,21 +47,21 @@ def input_students
                       "may16"]
     until $cohort_months.include?(cohort)
       puts "You did not enter a valid cohort e.g. july16"
-      cohort = gets.chop
+      cohort = STDIN.gets.chop
     end
     cohort.to_sym
     hobbies = []
     puts "Please enter #{name}'s hobbies, one by one followed by return."
-    hobby_each = gets.chop
+    hobby_each = STDIN.gets.chop
     while !hobby_each.empty? do
       hobbies << hobby_each
-      hobby_each = gets.chop
+      hobby_each = STDIN.gets.chop
     end
     puts "Please enter #{name}'s country of birth"
-    country_birth = gets.chop
+    country_birth = STDIN.gets.chop
     while country_birth.empty? do
       puts "You must enter #{name}'s country of birth"
-      country_birth = gets.chop
+      country_birth = STDIN.gets.chop
     end
     @students << {name: name, cohort: cohort, hobbies: hobbies, country_birth: country_birth}
     if @students.count == 1
@@ -71,7 +71,7 @@ def input_students
     end
     # Get another name from the user
     puts "Please enter the name of the next student"
-    name = gets.chop
+    name = STDIN.gets.chop
   end
 end
 
@@ -133,6 +133,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
+  puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
 
@@ -150,6 +151,8 @@ def process(selection)
     show_students
   when "3"
     save_students
+  when "4"
+    load_students
   when "9"
     exit
   else
@@ -169,11 +172,31 @@ def save_students
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
+end
+
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
+  file.readlines.each do |line|
+    name, cohort, hobbies, country_birth = line.chomp.split(",")
+    @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, country_birth: country_birth}
+  end
+  file.close
+end
+
 def interactive_menu
-  @students = []
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -183,7 +206,9 @@ end
 #print_cohorts(@students)
 #print_footer(@students)
 
+try_load_students
 interactive_menu
+
 
 =begin
 print_header
