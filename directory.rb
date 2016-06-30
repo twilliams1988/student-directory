@@ -209,9 +209,9 @@ def interactive_menu
   end
 end
 
-try_load_students
-interactive_menu
-
+#try_load_students
+#interactive_menu
+puts File.read(__FILE__)
 
 #students = input_students
 #print_header
