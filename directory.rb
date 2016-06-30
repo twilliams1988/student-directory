@@ -49,6 +49,7 @@ def input_students
       cohort = STDIN.gets.chop
     end
     cohort.to_sym
+=begin
     hobbies = []
     puts "Please enter #{name}'s hobbies, one by one followed by return."
     hobby_each = STDIN.gets.chop
@@ -56,13 +57,14 @@ def input_students
       hobbies << hobby_each
       hobby_each = STDIN.gets.chop
     end
+=end
     puts "Please enter #{name}'s country of birth"
     country_birth = STDIN.gets.chop
     while country_birth.empty? do
       puts "You must enter #{name}'s country of birth"
       country_birth = STDIN.gets.chop
     end
-    @students << {name: name, cohort: cohort, hobbies: hobbies, country_birth: country_birth}
+    @students << {name: name, cohort: cohort, country_birth: country_birth}
     if @students.count == 1
       puts "Now we have 1 student"
     else
@@ -87,7 +89,7 @@ def print_cohorts(students)
     print "Cohort: #{k}\t"
     puts ""
     v.each do |student|
-      puts "\n\tName: #{student[:name]}\n\tBorn in: #{student[:country_birth]}\n\tHobbies: #{student[:hobbies].join(", ")}"
+      puts "\n\tName: #{student[:name]}\n\tBorn in: #{student[:country_birth]}"
     end
   end
 end
@@ -104,8 +106,8 @@ def print_menu
   # 1. print the menu and ask the user what to do
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list"
+  puts "4. Load the list"
   puts "9. Exit"
 end
 
@@ -142,7 +144,7 @@ end
 
 def exit_countdown
   puts "The program is quitting..."
-  5.downto(0) do |i|
+  3.downto(1) do |i|
     puts "#{i}"
     sleep 1
   end
@@ -151,7 +153,7 @@ end
 
 def dot_counter
   print "."
-  3.downto(0) do |i|
+  2.downto(1) do |i|
     print "."
     sleep 1
   end
@@ -160,20 +162,28 @@ end
 
 def save_students
   # open file for writing
-  file = File.open("students.csv", "w")
+  puts "Please enter a filename in the format xxxxxxxx.csv:"
+  filename = gets.chomp
+  CSV.open(filename, "w") { |row|
   # iterate over the array of students
   @students.each do |student|
-    students_data = [student[:name], student[:cohort], student[:hobbies], student[:country_birth]]
-    csv_line = students_data.join(",")
-    file.puts csv_line
-  end
-  file.close
+    students_data = [student[:name], student[:cohort], student[:country_birth]]
+    row << students_data
+    end
+  }
+  puts "Your data has been saved."
 end
 
 def try_load_students
   filename = ARGV.first
   if filename.nil?
-    load_students("students.csv")
+    puts "Would you like to load a csv file? y/n?"
+    load_file_yn = gets.chomp
+    if load_file_yn == "y"
+      load_students
+    else
+      interactive_menu
+    end
   elsif File.exists?(filename)
     load_students(filename)
     puts "Loaded #{@students.count} from #{filename}"
@@ -184,12 +194,12 @@ def try_load_students
 end
 
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort, hobbies, country_birth = line.chomp.split(",")
-    @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, country_birth: country_birth}
+  puts "Please enter the filename you would like to open:"
+  filename = gets.chomp
+  CSV.foreach(filename, "r") do |row|
+    name, cohort, country_birth = row[0], row[1], row[3]
+    @students << {name: name, cohort: cohort.to_sym, country_birth: country_birth}
   end
-  file.close
 end
 
 def interactive_menu
